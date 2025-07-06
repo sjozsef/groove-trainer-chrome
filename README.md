@@ -14,4 +14,19 @@ When you activate the extension, it will randomly mute or unmute your tabs. Your
 
 ## Options
 
-You can adjust the time 
+You can configure the minimum and maximum duration for both muted and unmuted periods. Right-click the extension icon and select "Options" to access the settings page.
+
+The available settings are:
+- **Unmuted Time Min/Max (s):** The range of time a tab will stay unmuted.
+- **Muted Time Min/Max (s):** The range of time a tab will be muted.
+
+The extension will pick a random duration within these ranges for each cycle.
+
+## Development
+
+To set up a development environment for this extension:
+1. Open Chrome and navigate to `chrome://extensions`.
+2. Enable "Developer mode".
+3. Click "Load unpacked" and select the project directory.
+
+Any changes to the code will require you to reload the extension from the `chrome://extensions` page.

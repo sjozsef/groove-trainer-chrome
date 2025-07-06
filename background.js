@@ -5,9 +5,15 @@ async function updateBadge() {
   await chrome.action.setBadgeText({ text: badgeText });
 }
 
-// When the extension is installed, initialize the state.
+// When the extension is installed, initialize the state and settings.
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.storage.local.set({ isActive: false });
+  chrome.storage.local.set({
+    isActive: false,
+    unmutedTimeMin: 30,
+    unmutedTimeMax: 60,
+    mutedTimeMin: 5,
+    mutedTimeMax: 15
+  });
 });
 
 // Toggle state and update badge on icon click.

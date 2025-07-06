@@ -8,9 +8,10 @@ When you activate the extension on a YouTube tab, it will randomly set the video
 
 ## How to use
 1. Install the extension from the Chrome Web Store.
-2. Open a video on YouTube and activate the extension by clicking its icon in the toolbar.
-3. Use accurately recorded music.
-4. Start with easy settings and basic music with a stable 4/4 time signature.
+2. Pin the extension icon to your toolbar in order to access it easily.
+3. Open a video on YouTube and activate the extension by clicking its icon in the toolbar.
+4. Use accurately recorded music.
+5. Start with easy settings and basic music with a stable 4/4 time signature.
 
 ## Tips and Tricks
 

@@ -1,10 +1,10 @@
 // When the extension is installed, initialize settings.
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
-    unmutedTimeMin: 30,
-    unmutedTimeMax: 60,
-    mutedTimeMin: 5,
-    mutedTimeMax: 15
+    unmutedTimeMin: 3,
+    unmutedTimeMax: 6,
+    mutedTimeMin: 3,
+    mutedTimeMax: 6
   });
   // Use session storage for tab-specific state, which is cleared when the browser closes.
   chrome.storage.session.set({ activeTabs: {}, tabStates: {} });

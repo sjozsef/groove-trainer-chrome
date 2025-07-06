@@ -1,0 +1,35 @@
+<svg width="1280" height="800" xmlns="http://www.w3.org/2000/svg" font-family="sans-serif">
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="#F5F5F5"/>
+  
+  <!-- Main Title -->
+  <text x="50%" y="180" font-size="96" font-weight="bold" text-anchor="middle" fill="#212121">
+    Groove Trainer
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="50%" y="270" font-size="36" text-anchor="middle" fill="#616161">
+    Master Your Inner Clock on YouTube
+  </text>
+  
+  <!-- Separator Line -->
+  <rect x="240" y="350" width="800" height="2" fill="#E0E0E0" />
+  
+  <!-- Description -->
+  <text x="50%" y="450" font-size="28" text-anchor="middle" fill="#424242">
+    <tspan>This extension creates "silent bars" in your music to help you</tspan>
+    <tspan x="50%" dy="1.4em">develop a rock-solid internal sense of time.</tspan>
+  </text>
+  
+  <!-- How it Works Section -->
+  <g text-anchor="middle" font-size="24" fill="#424242">
+    <text x="50%" y="580" font-weight="bold" font-size="28" fill="#212121">
+      How It Works
+    </text>
+    <text x="50%" y="640">
+      <tspan>1. Activate the extension on any YouTube video.</tspan>
+      <tspan x="50%" dy="1.6em">2. The audio will randomly mute and unmute.</tspan>
+      <tspan x="50%" dy="1.6em">3. Your challenge is to stay perfectly in time during the silence.</tspan>
+    </text>
+  </g>
+</svg>

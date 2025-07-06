@@ -70,11 +70,6 @@ async function stopCycleForTab(tabId) {
     delete newTabStates[tabId];
     await chrome.storage.session.set({ tabStates: newTabStates });
   }
-  try {
-    await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
-  } catch (error) {
-    console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
-  }
 }
 
 async function startCycleForTab(tabId) {
@@ -107,7 +102,12 @@ chrome.action.onClicked.addListener(async (tab) => {
   if (!wasActive) {
     startCycleForTab(tab.id);
   } else {
-    stopCycleForTab(tab.id);
+    await stopCycleForTab(tab.id);
+    try {
+      await chrome.tabs.sendMessage(tab.id, { action: 'restore' });
+    } catch (error) {
+      console.log(`Could not send message to tab ${tab.id} to restore state.`, error.message);
+    }
   }
 });
 
@@ -154,7 +154,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
   if (currentState.nextState === 'muted') {
     try {
-      await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 0 });
+      await chrome.tabs.sendMessage(tabId, { action: 'mute' });
     } catch (error) {
       console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
       stopCycleForTab(tabId);
@@ -169,7 +169,7 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime });
   } else if (currentState.nextState === 'unmuted') {
     try {
-      await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
+      await chrome.tabs.sendMessage(tabId, { action: 'unmute' });
     } catch (error) {
       console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
       stopCycleForTab(tabId);

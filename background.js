@@ -23,17 +23,17 @@ async function stopCycleForTab(tabId) {
     await chrome.storage.session.set({ tabStates: newTabStates });
   }
   try {
-    await chrome.tabs.update(tabId, { muted: false });
+    await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
   } catch (error) {
-    console.log(`Could not unmute tab ${tabId}, it might be closed.`, error.message);
+    console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
   }
 }
 
 async function startCycleForTab(tabId) {
   try {
-    await chrome.tabs.update(tabId, { muted: false });
-  } catch (error) {
-    console.log(`Could not unmute tab ${tabId}, it might be closed.`, error.message);
+    await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
+  } catch (error)
+    console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
     return;
   }
 
@@ -57,6 +57,9 @@ async function updateBadge(tabId) {
 }
 
 chrome.action.onClicked.addListener(async (tab) => {
+  if (!tab.url || !tab.url.includes('youtube.com/watch')) {
+    return;
+  }
   const { activeTabs } = await chrome.storage.session.get('activeTabs');
   const wasActive = !!activeTabs[tab.id];
 
@@ -114,9 +117,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 
   if (currentState.nextState === 'muted') {
     try {
-      await chrome.tabs.update(tabId, { muted: true });
+      await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 0 });
     } catch (error) {
-      console.log(`Could not mute tab ${tabId}, it might be closed.`, error.message);
+      console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
       stopCycleForTab(tabId);
       return;
     }
@@ -127,9 +130,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     chrome.alarms.create(`groove-cycle-${tabId}`, { when: Date.now() + delayInSeconds * 1000 });
   } else if (currentState.nextState === 'unmuted') {
     try {
-      await chrome.tabs.update(tabId, { muted: false });
+      await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
     } catch (error) {
-      console.log(`Could not unmute tab ${tabId}, it might be closed.`, error.message);
+      console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
       stopCycleForTab(tabId);
       return;
     }

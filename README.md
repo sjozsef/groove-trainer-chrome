@@ -1,14 +1,14 @@
 # Groove Trainer for Chrome
 
-This is a Chrome extension that helps you train your inner groove.
+This is a YouTube-specific Chrome extension that helps you train your inner groove.
 
 ## How it works
 
-When you activate the extension, it will randomly mute or unmute your tabs. Your task is to tap the beat on a table or play an instrument so that you don't lose time even when the music is muted.
+When you activate the extension on a YouTube tab, it will randomly set the video's volume to zero and then back to its original level. Your task is to tap the beat on a table or play an instrument so that you don't lose time even when the music is silenced.
 
 ## How to use
 1. Install the extension from the Chrome Web Store.
-2. Activate the extension on a tab (e.g., YouTube).
+2. Open a video on YouTube and activate the extension by clicking its icon in the toolbar.
 3. Use accurately recorded music.
 4. Start with easy settings and basic music with a stable 4/4 time signature.
 

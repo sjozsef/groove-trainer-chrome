@@ -12,6 +12,13 @@ When you activate the extension, it will randomly mute or unmute your tabs. Your
 3. Use accurately recorded music.
 4. Start with easy settings and basic music with a stable 4/4 time signature.
 
+## Tips and Tricks
+
+- **Count Subdivisions:** During the muted periods, keep the pulse by counting subdivisions (like "1-e-and-a-2-e-and-a...") in your head. This helps maintain accuracy.
+- **Gradual Progression:** Begin with longer unmuted times and shorter muted times. As you improve, you can challenge yourself by increasing the muted duration in the Options.
+- **Engage Your Body:** Tap your foot, nod your head, or use some other physical motion to keep time. This internalizes the beat and makes it easier to stay on track during silence.
+- **Focus on the 'One':** If you get lost, focus on finding the downbeat (the 'one' of each measure) when the music comes back. This is the foundation of the groove.
+
 ## Options
 
 You can configure the minimum and maximum duration for both muted and unmuted periods. Right-click the extension icon and select "Options" to access the settings page.

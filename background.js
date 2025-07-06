@@ -6,6 +6,11 @@ chrome.runtime.onInstalled.addListener(() => {
     mutedTimeMax: 6
   });
   chrome.storage.session.set({ activeTabs: {}, tabStates: {} });
+  initializeBadges();
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  initializeBadges();
 });
 
 function getRandomInt(min, max) {
@@ -152,4 +157,3 @@ async function initializeBadges() {
         }
     }
 }
-initializeBadges();

@@ -13,6 +13,46 @@ chrome.runtime.onStartup.addListener(() => {
   initializeBadges();
 });
 
+let creating;
+async function setupOffscreenDocument(path) {
+  const offscreenUrl = chrome.runtime.getURL(path);
+  const existingContexts = await chrome.runtime.getContexts({
+    contextTypes: ['OFFSCREEN_DOCUMENT'],
+    documentUrls: [offscreenUrl],
+  });
+
+  if (existingContexts.length > 0) {
+    return;
+  }
+
+  if (creating) {
+    await creating;
+  } else {
+    creating = chrome.offscreen.createDocument({
+      url: path,
+      reasons: ['TIMERS'],
+      justification: 'Badge countdown timer.',
+    });
+    await creating;
+    creating = null;
+  }
+}
+
+chrome.runtime.onMessage.addListener(async (message) => {
+  if (message.type === 'timer-tick') {
+    const { tabId, remaining } = message;
+    const { tabStates } = await chrome.storage.session.get('tabStates');
+    const currentState = tabStates ? tabStates[tabId] : null;
+
+    if (currentState) {
+      const isMuted = currentState.nextState === 'unmuted';
+      const color = isMuted ? 'red' : '#777';
+      await chrome.action.setBadgeBackgroundColor({ tabId, color });
+      await chrome.action.setBadgeText({ tabId, text: String(remaining) });
+    }
+  }
+});
+
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -20,6 +60,9 @@ function getRandomInt(min, max) {
 }
 
 async function stopCycleForTab(tabId) {
+  chrome.runtime.sendMessage({ type: 'stop-timer', tabId });
+  await chrome.action.setBadgeText({ tabId, text: '' });
+
   await chrome.alarms.clear(`groove-cycle-${tabId}`);
   const { tabStates } = await chrome.storage.session.get('tabStates');
   if (tabStates && tabStates.hasOwnProperty(tabId)) {
@@ -35,6 +78,8 @@ async function stopCycleForTab(tabId) {
 }
 
 async function startCycleForTab(tabId) {
+  await setupOffscreenDocument('offscreen.html');
+
   try {
     await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
   } catch (error) {
@@ -49,16 +94,9 @@ async function startCycleForTab(tabId) {
   const newTabStates = { ...tabStates, [tabId]: { nextState: 'muted' } };
   await chrome.storage.session.set({ tabStates: newTabStates });
 
-  chrome.alarms.create(`groove-cycle-${tabId}`, { when: Date.now() + delayInSeconds * 1000 });
-}
-
-async function updateBadge(tabId) {
-  const { activeTabs } = await chrome.storage.session.get('activeTabs');
-  const isActive = activeTabs && activeTabs[tabId];
-  const badgeText = isActive ? 'ON' : 'OFF';
-  const color = isActive ? 'red' : '#777';
-  await chrome.action.setBadgeBackgroundColor({ tabId, color: color });
-  await chrome.action.setBadgeText({ tabId, text: badgeText });
+  const scheduledTime = Date.now() + delayInSeconds * 1000;
+  chrome.alarms.create(`groove-cycle-${tabId}`, { when: scheduledTime });
+  chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime });
 }
 
 chrome.action.onClicked.addListener(async (tab) => {
@@ -72,22 +110,11 @@ chrome.action.onClicked.addListener(async (tab) => {
   newActiveTabs[tab.id] = !wasActive;
 
   await chrome.storage.session.set({ activeTabs: newActiveTabs });
-  await updateBadge(tab.id);
 
   if (!wasActive) {
     startCycleForTab(tab.id);
   } else {
     stopCycleForTab(tab.id);
-  }
-});
-
-chrome.tabs.onActivated.addListener((activeInfo) => {
-  updateBadge(activeInfo.tabId);
-});
-
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (changeInfo.status === 'complete' && tab.url) {
-    updateBadge(tabId);
   }
 });
 
@@ -132,7 +159,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     const delayInSeconds = getRandomInt(parseInt(settings.mutedTimeMin, 10), parseInt(settings.mutedTimeMax, 10));
     const newTabStates = { ...tabStates, [tabId]: { nextState: 'unmuted' } };
     await chrome.storage.session.set({ tabStates: newTabStates });
-    chrome.alarms.create(`groove-cycle-${tabId}`, { when: Date.now() + delayInSeconds * 1000 });
+    const scheduledTime = Date.now() + delayInSeconds * 1000;
+    chrome.alarms.create(`groove-cycle-${tabId}`, { when: scheduledTime });
+    chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime });
   } else if (currentState.nextState === 'unmuted') {
     try {
       await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
@@ -145,7 +174,9 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     const delayInSeconds = getRandomInt(parseInt(settings.unmutedTimeMin, 10), parseInt(settings.unmutedTimeMax, 10));
     const newTabStates = { ...tabStates, [tabId]: { nextState: 'muted' } };
     await chrome.storage.session.set({ tabStates: newTabStates });
-    chrome.alarms.create(`groove-cycle-${tabId}`, { when: Date.now() + delayInSeconds * 1000 });
+    const scheduledTime = Date.now() + delayInSeconds * 1000;
+    chrome.alarms.create(`groove-cycle-${tabId}`, { when: scheduledTime });
+    chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime });
   }
 });
 
@@ -153,7 +184,7 @@ async function initializeBadges() {
     const tabs = await chrome.tabs.query({});
     for (const tab of tabs) {
         if (tab.id) {
-            updateBadge(tab.id);
+            chrome.action.setBadgeText({ tabId: tab.id, text: '' });
         }
     }
 }

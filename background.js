@@ -51,6 +51,8 @@ async function updateBadge(tabId) {
   const { activeTabs } = await chrome.storage.session.get('activeTabs');
   const isActive = activeTabs && activeTabs[tabId];
   const badgeText = isActive ? 'ON' : 'OFF';
+  const color = isActive ? 'red' : '#777';
+  await chrome.action.setBadgeBackgroundColor({ tabId, color: color });
   await chrome.action.setBadgeText({ tabId, text: badgeText });
 }
 

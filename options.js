@@ -14,11 +14,27 @@ function save_options(e) {
     values[setting] = document.getElementById(setting).value;
   }
 
+  if (parseInt(values.unmutedTimeMin) > parseInt(values.unmutedTimeMax)) {
+    statusDiv.textContent = 'Unmuted Min cannot be greater than Max.';
+    statusDiv.style.color = 'red';
+    setTimeout(() => { statusDiv.textContent = ''; statusDiv.style.color = ''; }, 3000);
+    return;
+  }
+
+  if (parseInt(values.mutedTimeMin) > parseInt(values.mutedTimeMax)) {
+    statusDiv.textContent = 'Muted Min cannot be greater than Max.';
+    statusDiv.style.color = 'red';
+    setTimeout(() => { statusDiv.textContent = ''; statusDiv.style.color = ''; }, 3000);
+    return;
+  }
+
   chrome.storage.local.set(values, () => {
     statusDiv.textContent = 'Options saved.';
+    statusDiv.style.color = '#28a745';
     setTimeout(() => {
       statusDiv.textContent = '';
-    }, 750);
+      statusDiv.style.color = '';
+    }, 1500);
   });
 }
 

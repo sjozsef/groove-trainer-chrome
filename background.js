@@ -1,9 +1,9 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({
-    unmutedTimeMin: 3,
+    unmutedTimeMin: 6,
     unmutedTimeMax: 6,
-    mutedTimeMin: 3,
-    mutedTimeMax: 6
+    mutedTimeMin: 4,
+    mutedTimeMax: 4
   });
   chrome.storage.session.set({ activeTabs: {}, tabStates: {} });
   initializeBadges();

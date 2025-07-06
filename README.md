@@ -30,3 +30,7 @@ To set up a development environment for this extension:
 3. Click "Load unpacked" and select the project directory.
 
 Any changes to the code will require you to reload the extension from the `chrome://extensions` page.
+
+## Contribution
+
+Contributions are welcome! If you have ideas for improvements or find any bugs, feel free to open an issue or submit a pull request.

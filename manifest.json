@@ -3,7 +3,14 @@
   "version": "1.0",
   "manifest_version": 3,
   "description": "This is a plugin for musicians who want to develop their time and feel.",
-  "action": {},
+  "action": {
+    "default_icon": {
+      "16": "images/icon.svg",
+      "32": "images/icon.svg",
+      "48": "images/icon.svg",
+      "128": "images/icon.svg"
+    }
+  },
   "permissions": [
     "storage",
     "tabs",

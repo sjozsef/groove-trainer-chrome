@@ -5,7 +5,8 @@
   "description": "A basic skeleton for a Chrome Extension with a popup.",
   "action": {},
   "permissions": [
-    "storage"
+    "storage",
+    "tabs"
   ],
   "background": {
     "service_worker": "background.js"

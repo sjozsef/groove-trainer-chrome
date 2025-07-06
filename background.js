@@ -111,9 +111,12 @@ chrome.action.onClicked.addListener(async (tab) => {
   }
 });
 
-chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
-  if (changeInfo.status === 'loading') {
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // This handles both full reloads and YouTube's SPA-style navigation.
+  // When the URL changes, it indicates navigation to a new page.
+  if (changeInfo.url) {
     const { activeTabs } = await chrome.storage.session.get('activeTabs');
+    // If the extension was active on this tab, we need to reset its state.
     if (activeTabs && activeTabs[tabId]) {
       await stopCycleForTab(tabId);
       const newActiveTabs = { ...activeTabs };

@@ -3,7 +3,11 @@
   "version": "1.0",
   "manifest_version": 3,
   "description": "A basic skeleton for a Chrome Extension with a popup.",
-  "action": {
-    "default_popup": "popup.html"
+  "action": {},
+  "permissions": [
+    "storage"
+  ],
+  "background": {
+    "service_worker": "background.js"
   }
 }

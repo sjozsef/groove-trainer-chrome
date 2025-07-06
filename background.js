@@ -30,8 +30,8 @@ async function setupOffscreenDocument(path) {
   } else {
     creating = chrome.offscreen.createDocument({
       url: path,
-      reasons: ['TIMERS'],
-      justification: 'Badge countdown timer.',
+      reasons: ['AUDIO_PLAYBACK'],
+      justification: 'Badge countdown timer requires a persistent offscreen document.',
     });
     await creating;
     creating = null;

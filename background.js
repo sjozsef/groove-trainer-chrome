@@ -80,13 +80,6 @@ async function stopCycleForTab(tabId) {
 async function startCycleForTab(tabId) {
   await setupOffscreenDocument('offscreen.html');
 
-  try {
-    await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
-  } catch (error) {
-    console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
-    return;
-  }
-
   const { unmutedTimeMin, unmutedTimeMax } = await chrome.storage.local.get(['unmutedTimeMin', 'unmutedTimeMax']);
   const delayInSeconds = getRandomInt(parseInt(unmutedTimeMin, 10), parseInt(unmutedTimeMax, 10));
 
@@ -115,6 +108,18 @@ chrome.action.onClicked.addListener(async (tab) => {
     startCycleForTab(tab.id);
   } else {
     stopCycleForTab(tab.id);
+  }
+});
+
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo) => {
+  if (changeInfo.status === 'loading') {
+    const { activeTabs } = await chrome.storage.session.get('activeTabs');
+    if (activeTabs && activeTabs[tabId]) {
+      await stopCycleForTab(tabId);
+      const newActiveTabs = { ...activeTabs };
+      delete newActiveTabs[tabId];
+      await chrome.storage.session.set({ activeTabs: newActiveTabs });
+    }
   }
 });
 

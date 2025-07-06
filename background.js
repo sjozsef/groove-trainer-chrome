@@ -32,7 +32,7 @@ async function stopCycleForTab(tabId) {
 async function startCycleForTab(tabId) {
   try {
     await chrome.tabs.sendMessage(tabId, { action: 'setVolume', volume: 1 });
-  } catch (error)
+  } catch (error) {
     console.log(`Could not send message to tab ${tabId}, it might be closed or not a YouTube page.`, error.message);
     return;
   }

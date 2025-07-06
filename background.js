@@ -40,11 +40,11 @@ async function setupOffscreenDocument(path) {
 
 chrome.runtime.onMessage.addListener(async (message) => {
   if (message.type === 'timer-tick') {
-    const { tabId, remaining } = message;
+    const { tabId, remaining, cycleId } = message;
     const { tabStates } = await chrome.storage.session.get('tabStates');
     const currentState = tabStates ? tabStates[tabId] : null;
 
-    if (currentState) {
+    if (currentState && currentState.cycleId === cycleId) {
       const isMuted = currentState.nextState === 'unmuted';
       const color = isMuted ? 'red' : '#777';
       await chrome.action.setBadgeBackgroundColor({ tabId, color });
@@ -78,13 +78,14 @@ async function startCycleForTab(tabId) {
   const { unmutedTimeMin, unmutedTimeMax } = await chrome.storage.local.get(['unmutedTimeMin', 'unmutedTimeMax']);
   const delayInSeconds = getRandomInt(parseInt(unmutedTimeMin, 10), parseInt(unmutedTimeMax, 10));
 
+  const cycleId = Date.now();
   const { tabStates } = await chrome.storage.session.get('tabStates');
-  const newTabStates = { ...tabStates, [tabId]: { nextState: 'muted' } };
+  const newTabStates = { ...tabStates, [tabId]: { nextState: 'muted', cycleId } };
   await chrome.storage.session.set({ tabStates: newTabStates });
 
   const scheduledTime = Date.now() + delayInSeconds * 1000;
   chrome.alarms.create(`groove-cycle-${tabId}`, { when: scheduledTime });
-  chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime });
+  chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime, cycleId });
 }
 
 chrome.action.onClicked.addListener(async (tab) => {
@@ -165,11 +166,12 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     }
 
     const delayInSeconds = getRandomInt(parseInt(settings.mutedTimeMin, 10), parseInt(settings.mutedTimeMax, 10));
-    const newTabStates = { ...tabStates, [tabId]: { nextState: 'unmuted' } };
+    const cycleId = Date.now();
+    const newTabStates = { ...tabStates, [tabId]: { nextState: 'unmuted', cycleId } };
     await chrome.storage.session.set({ tabStates: newTabStates });
     const scheduledTime = Date.now() + delayInSeconds * 1000;
     chrome.alarms.create(`groove-cycle-${tabId}`, { when: scheduledTime });
-    chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime });
+    chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime, cycleId });
   } else if (currentState.nextState === 'unmuted') {
     try {
       await chrome.tabs.sendMessage(tabId, { action: 'unmute' });
@@ -180,11 +182,12 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     }
 
     const delayInSeconds = getRandomInt(parseInt(settings.unmutedTimeMin, 10), parseInt(settings.unmutedTimeMax, 10));
-    const newTabStates = { ...tabStates, [tabId]: { nextState: 'muted' } };
+    const cycleId = Date.now();
+    const newTabStates = { ...tabStates, [tabId]: { nextState: 'muted', cycleId } };
     await chrome.storage.session.set({ tabStates: newTabStates });
     const scheduledTime = Date.now() + delayInSeconds * 1000;
     chrome.alarms.create(`groove-cycle-${tabId}`, { when: scheduledTime });
-    chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime });
+    chrome.runtime.sendMessage({ type: 'start-timer', tabId, scheduledTime, cycleId });
   }
 });
 

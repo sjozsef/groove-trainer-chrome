@@ -3,7 +3,7 @@ const timers = {};
 chrome.runtime.onMessage.addListener(handleMessages);
 
 function handleMessages(message) {
-  const { type, tabId, scheduledTime } = message;
+  const { type, tabId, scheduledTime, cycleId } = message;
 
   if (type === 'start-timer') {
     if (timers[tabId]) {
@@ -13,7 +13,7 @@ function handleMessages(message) {
     const intervalId = setInterval(() => {
       const remaining = Math.round((scheduledTime - Date.now()) / 1000);
       if (remaining >= 0) {
-        chrome.runtime.sendMessage({ type: 'timer-tick', tabId, remaining });
+        chrome.runtime.sendMessage({ type: 'timer-tick', tabId, remaining, cycleId });
       } else {
         clearInterval(intervalId);
         delete timers[tabId];

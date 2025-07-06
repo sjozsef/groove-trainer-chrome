@@ -7,7 +7,6 @@ const settings = [
   'mutedTimeMax'
 ];
 
-// Saves options to chrome.storage.
 function save_options(e) {
   e.preventDefault();
   const values = {};
@@ -16,7 +15,6 @@ function save_options(e) {
   }
 
   chrome.storage.local.set(values, () => {
-    // Update status to let user know options were saved.
     statusDiv.textContent = 'Options saved.';
     setTimeout(() => {
       statusDiv.textContent = '';
@@ -24,7 +22,6 @@ function save_options(e) {
   });
 }
 
-// Restores settings using the preferences stored in chrome.storage.
 function restore_options() {
   chrome.storage.local.get(settings, (items) => {
     for (const setting of settings) {

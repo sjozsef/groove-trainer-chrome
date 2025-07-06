@@ -2,7 +2,7 @@
   "name": "Groove Trainer",
   "version": "1.0",
   "manifest_version": 3,
-  "description": "A basic skeleton for a Chrome Extension with a popup.",
+  "description": "This is a plugin for musicians who want to develop their groove, their inner metronome, time and feel.",
   "action": {},
   "permissions": [
     "storage",

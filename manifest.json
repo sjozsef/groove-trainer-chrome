@@ -5,17 +5,17 @@
   "description": "This is a YouTube-specific plugin for musicians who want to develop their groove, their inner metronome, time and feel.",
   "action": {
     "default_icon": {
-      "16": "images/icon.svg",
-      "32": "images/icon.svg",
-      "48": "images/icon.svg",
-      "128": "images/icon.svg"
+      "16": "images/icon16.png",
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
     }
   },
   "icons": {
-    "16": "images/icon.svg",
-    "32": "images/icon.svg",
-    "48": "images/icon.svg",
-    "128": "images/icon.svg"
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
   },
   "permissions": [
     "storage",

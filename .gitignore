@@ -1,2 +1,3 @@
 .aider*
 build/
+.DS_Store

@@ -21,6 +21,7 @@ zip -r $ZIP_PATH . -x \
     "$BUILD_DIR/*" \
     ".gitignore" \
     "README.md" \
-    "images/icon.svg"
+    "images/icon.svg" \
+    "**/.DS_Store"
 
 echo "Extension packaged successfully: $ZIP_PATH"
